@@ -6,20 +6,32 @@ import { AppService } from './app.service';
 import { join } from 'path';
 import { AppResolver } from './app.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
-@Module({
+s@Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/fiver-replica'),
+    // MongooseModule.forRoot(
+    //   'mongodb+srv://Sebika:Sebika%401@fiver.mv8jdmr.mongodb.net/?appName=Fiver',
+    // ),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule.forRoot({ isGlobal: true })],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const uri = configService.get<string>('MONGO_URI');
+        if (!uri) throw new Error('MONGO_URI not defined in .env');
+
+        return {
+          uri,
+        };
+      },
+    }),
 
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: true,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-    }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      graphiql: true,
-      playground: true,
+      playground: false,
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      context: ({ req, res }) => ({ req, res }),
       path: '/api',
       sortSchema: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
