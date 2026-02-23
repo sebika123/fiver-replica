@@ -9,7 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
-s@Module({
+@Module({
   imports: [
     // MongooseModule.forRoot(
     //   'mongodb+srv://Sebika:Sebika%401@fiver.mv8jdmr.mongodb.net/?appName=Fiver',
