@@ -8,12 +8,13 @@ import { AppResolver } from './app.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
-    // MongooseModule.forRoot(
-    //   'mongodb+srv://Sebika:Sebika%401@fiver.mv8jdmr.mongodb.net/?appName=Fiver',
-    // ),
     MongooseModule.forRootAsync({
       imports: [ConfigModule.forRoot({ isGlobal: true })],
       inject: [ConfigService],
@@ -22,7 +23,9 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
         if (!uri) throw new Error('MONGO_URI not defined in .env');
 
         return {
-          uri,
+          // uri,
+          uri: configService.get<string>('MONGO_URI'),
+          dbName: 'FiverDB',
         };
       },
     }),
@@ -36,8 +39,19 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
       sortSchema: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+
+    UsersModule,
+
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppResolver],
+  providers: [
+    AppService,
+    AppResolver,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
