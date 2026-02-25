@@ -49,7 +49,7 @@ export class AuthService {
     await this.mailService.sendMail(
       input.email,
       'Verify your email',
-      `Your OTP code is ${otp}`,
+      ` Hi ${input.name}, your account has been created. Your OTP code is ${otp}.Use this code to verify your email and activate your account.`,
     );
 
     return { message: 'User registered. Check email for OTP' };
@@ -64,4 +64,6 @@ export class AuthService {
     await this.usersService.activateUser(userId);
     return { message: 'Email verified successfully' };
   }
+
+  
 }

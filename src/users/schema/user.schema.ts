@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Document } from 'mongoose';
+import { UserRole } from 'src/common/types/roles.types';
 
 @ObjectType()
 @Schema()
@@ -36,6 +37,14 @@ export class User extends Document {
 
   @Prop()
   otpExpiry: Date;
+
+  @Field()
+  @Prop({
+    type: String,
+    enum: UserRole,
+    default: UserRole.BUYER,
+  })
+  role: UserRole;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

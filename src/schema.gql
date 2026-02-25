@@ -26,10 +26,11 @@ type Query {
 input RegisterInput {
   avatarUrl: String
   email: String!
-  gender: String
+  gender: UserGender
   name: String!
   password: String!
   phoneNumber: String
+  role: UserRole!
 }
 
 type RegisterResponse {
@@ -42,4 +43,17 @@ type User {
   gender: String
   name: String!
   phoneNumber: String
+  role: String!
+}
+
+enum UserGender {
+  FEMALE
+  MALE
+  OTHER
+}
+
+enum UserRole {
+  ADMIN
+  BUYER
+  SELLER
 }
