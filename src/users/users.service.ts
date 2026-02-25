@@ -1,6 +1,6 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from './schema/user.schema';
 
 @Injectable()
@@ -10,7 +10,10 @@ export class UsersService {
     private userModel: Model<User>,
   ) {}
 
-  async create(data: { name: string; email: string; password: string }) {
+  async create(data: Partial<User>) {
+    if (!data.email) {
+      throw new Error('Email is required');
+    }
     const existingUser = await this.findByEmail(data.email);
 
     if (existingUser) {
@@ -31,5 +34,27 @@ export class UsersService {
 
   async findAll() {
     return this.userModel.find();
+  }
+
+  async saveOTP(userId: string | Types.ObjectId, otp: string) {
+    const expiry = new Date();
+    expiry.setMinutes(expiry.getMinutes() + 10);
+    await this.userModel.findByIdAndUpdate(userId, { otp, otpExpiry: expiry });
+  }
+
+  async verifyOTP(userId: string, otp: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) return false;
+    if (user.otp !== otp) return false;
+    if (user.otpExpiry < new Date()) return false;
+    return true;
+  }
+
+  async activateUser(userId: string) {
+    await this.userModel.findByIdAndUpdate(userId, {
+      isActive: true,
+      otp: null,
+      otpExpiry: null,
+    });
   }
 }

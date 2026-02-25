@@ -7,9 +7,16 @@ input LoginInput {
   password: String!
 }
 
+type LoginResponse {
+  accessToken: String!
+  refreshToken: String!
+  user: User!
+}
+
 type Mutation {
-  login(input: LoginInput!): String!
-  register(input: RegisterInput!): User!
+  login(input: LoginInput!): LoginResponse!
+  register(input: RegisterInput!): RegisterResponse!
+  verifyOTP(otp: String!, userId: String!): RegisterResponse!
 }
 
 type Query {
@@ -17,12 +24,22 @@ type Query {
 }
 
 input RegisterInput {
+  avatarUrl: String
   email: String!
+  gender: String
   name: String!
   password: String!
+  phoneNumber: String
+}
+
+type RegisterResponse {
+  message: String!
 }
 
 type User {
+  avatarUrl: String
   email: String!
+  gender: String
   name: String!
+  phoneNumber: String
 }

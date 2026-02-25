@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthResolver } from './auth.resolver';
+import { MailerModule } from 'src/common/mailer/mailer.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthResolver } from './auth.resolver';
       }),
     }),
     UsersModule,
+    MailerModule,
   ],
   providers: [AuthService, AuthResolver],
   controllers: [AuthController],

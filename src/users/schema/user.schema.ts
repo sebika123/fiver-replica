@@ -15,6 +15,27 @@ export class User extends Document {
 
   @Prop({ required: true })
   password: string;
+
+  @Field({ nullable: true })
+  @Prop()
+  avatarUrl?: string;
+
+  @Field({ nullable: true })
+  @Prop()
+  phoneNumber?: string;
+
+  @Field({ nullable: true })
+  @Prop()
+  gender?: string;
+
+  @Prop({ default: false })
+  isActive: boolean;
+
+  @Prop()
+  otp: string;
+
+  @Prop()
+  otpExpiry: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
