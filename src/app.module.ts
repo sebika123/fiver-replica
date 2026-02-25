@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { GigsModule } from './gigs/gigs.module';
 
 @Module({
   imports: [
@@ -43,6 +44,8 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     UsersModule,
 
     AuthModule,
+
+    GigsModule,
   ],
   controllers: [AppController],
   providers: [
