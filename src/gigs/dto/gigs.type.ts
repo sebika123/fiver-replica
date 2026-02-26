@@ -34,3 +34,39 @@ export class CreateGigResponse {
   @Field()
   message: string;
 }
+
+@InputType()
+export class UpdateGigInput {
+  @IsString()
+  @Field({ nullable: true })
+  title?: string;
+
+  @IsString()
+  @Field({ nullable: true })
+  description?: string;
+
+  @IsNumber()
+  @Field({ nullable: true })
+  price?: number;
+
+  @IsString()
+  @Field({ nullable: true })
+  category?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @Field(() => [String], { nullable: true })
+  tags?: string[];
+}
+
+@InputType()
+export class ListGigsInput {
+  @Field(() => Number, { nullable: true, defaultValue: 1 })
+  page: number;
+
+  @Field(() => Number, { nullable: true, defaultValue: 10 })
+  limit: number;
+
+  @Field(() => String)
+  userId: string;
+}

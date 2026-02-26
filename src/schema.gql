@@ -27,6 +27,13 @@ type Gig {
   price: Float!
   tags: [String!]!
   title: String!
+  userId: String!
+}
+
+input ListGigsInput {
+  limit: Float = 10
+  page: Float = 1
+  userId: String!
 }
 
 input LoginInput {
@@ -42,6 +49,8 @@ type LoginResponse {
 
 type Mutation {
   createGig(input: CreateGigInput!): CreateGigResponse!
+  deleteGig(gigId: String!): String!
+  editGig(gigId: String!, updateData: UpdateGigInput!): CreateGigResponse!
   login(input: LoginInput!): LoginResponse!
   register(input: RegisterInput!): RegisterResponse!
   verifyOTP(otp: String!, userId: String!): RegisterResponse!
@@ -49,6 +58,7 @@ type Mutation {
 
 type Query {
   hello: String!
+  listAllGigs(input: ListGigsInput): [Gig!]!
 }
 
 input RegisterInput {
@@ -63,6 +73,14 @@ input RegisterInput {
 
 type RegisterResponse {
   message: String!
+}
+
+input UpdateGigInput {
+  category: String
+  description: String
+  price: Float
+  tags: [String!]
+  title: String
 }
 
 type User {

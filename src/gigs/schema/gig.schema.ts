@@ -28,6 +28,10 @@ export class Gig extends Document {
   @Field()
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Field()
+  @Prop({ required: true })
+  userId: string;
 }
 
 export const GigSchema = SchemaFactory.createForClass(Gig);
