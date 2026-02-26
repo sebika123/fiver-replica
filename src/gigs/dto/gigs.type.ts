@@ -1,6 +1,16 @@
 import { InputType, Field, ObjectType } from '@nestjs/graphql';
 import { IsString, IsNumber, IsArray } from 'class-validator';
 import { Gig } from '../schema/gig.schema';
+import { GraphQLUpload } from 'graphql-upload';
+import { FileUpload } from 'graphql-upload';
+@ObjectType()
+export class GigImage {
+  @Field()
+  url: string;
+
+  @Field()
+  publicId: string;
+}
 
 @InputType()
 export class CreateGigInput {
@@ -24,6 +34,12 @@ export class CreateGigInput {
   @IsString({ each: true })
   @Field(() => [String])
   tags: string[];
+
+  @Field(() => [GraphQLUpload], { nullable: true })
+  images?: Promise<FileUpload>[];
+
+  @Field()
+  createdAt: Date;
 }
 
 @ObjectType()
@@ -57,6 +73,9 @@ export class UpdateGigInput {
   @IsString({ each: true })
   @Field(() => [String], { nullable: true })
   tags?: string[];
+
+  @Field(() => [GraphQLUpload], { nullable: true })
+  images?: Promise<FileUpload>[];
 }
 
 @InputType()
