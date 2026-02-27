@@ -1,7 +1,7 @@
+// gig.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Document } from 'mongoose';
-import { GigImage } from '../dto/gigs.type';
+import { HydratedDocument } from 'mongoose';
 
 @ObjectType()
 export class ImageType {
@@ -15,8 +15,14 @@ export class ImageType {
 }
 
 @ObjectType()
-@Schema()
-export class Gig extends Document {
+@Schema({ timestamps: true })
+export class Gig {
+  @Field(() => ID)
+  _id: string;
+
+  @Field(() => ID)
+  id: string;
+
   @Field()
   @Prop({ required: true })
   title: string;
@@ -38,8 +44,10 @@ export class Gig extends Document {
   tags: string[];
 
   @Field()
-  @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 
   @Field()
   @Prop({ required: true })
@@ -50,4 +58,9 @@ export class Gig extends Document {
   images: ImageType[];
 }
 
-export const GigSchema = SchemaFactory.createForClass(Gig);
+// ✅ Use HydratedDocument instead of extending Document in the class
+export type GigDocument = HydratedDocument<Gig>;
+
+export const GigSchema: any = SchemaFactory.createForClass(Gig);
+GigSchema.set('toObject', { virtuals: true });
+GigSchema.set('toJSON', { virtuals: true });

@@ -5,6 +5,7 @@
 input CreateGigInput {
   category: String!
   description: String!
+  images: [Upload!]
   price: Float!
   tags: [String!]!
   title: String!
@@ -21,13 +22,22 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Gig {
+  _id: ID!
   category: String!
   createdAt: DateTime!
   description: String!
+  id: ID!
+  images: [ImageType!]
   price: Float!
   tags: [String!]!
   title: String!
+  updatedAt: DateTime!
   userId: String!
+}
+
+type ImageType {
+  publicId: String!
+  url: String!
 }
 
 input ListGigsInput {
@@ -78,10 +88,14 @@ type RegisterResponse {
 input UpdateGigInput {
   category: String
   description: String
+  images: [Upload!]
   price: Float
   tags: [String!]
   title: String
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type User {
   avatarUrl: String

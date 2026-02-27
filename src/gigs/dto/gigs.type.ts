@@ -37,9 +37,6 @@ export class CreateGigInput {
 
   @Field(() => [GraphQLUpload], { nullable: true })
   images?: Promise<FileUpload>[];
-
-  @Field()
-  createdAt: Date;
 }
 
 @ObjectType()

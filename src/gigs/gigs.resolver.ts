@@ -36,6 +36,25 @@ export class GigsResolver {
     return this.gigsService.listAllGigs(userId, page, limit);
   }
 
+  // @UseGuards(JwtAuthGuard)
+  // @Mutation(() => CreateGigResponse)
+  // async editGig(
+  //   @Args('gigId') gigId: string,
+  //   @Args('updateData') updateData: UpdateGigInput,
+  //   @Context() context: any,
+  // ) {
+  //   const userId = context.req.user.userId;
+  //   const updatedGig = await this.gigsService.editGig(
+  //     gigId,
+  //     updateData,
+  //     userId,
+  //   );
+  //   return {
+  //     gig: updatedGig,
+  //     message: 'Gig updated successfully',
+  //   };
+  // }
+
   @UseGuards(JwtAuthGuard)
   @Mutation(() => CreateGigResponse)
   async editGig(
@@ -44,15 +63,7 @@ export class GigsResolver {
     @Context() context: any,
   ) {
     const userId = context.req.user.userId;
-    const updatedGig = await this.gigsService.editGig(
-      gigId,
-      updateData,
-      userId,
-    );
-    return {
-      gig: updatedGig,
-      message: 'Gig updated successfully',
-    };
+    return this.gigsService.editGig(gigId, updateData, userId);
   }
 
   @UseGuards(JwtAuthGuard)
