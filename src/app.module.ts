@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { GigsModule } from './gigs/gigs.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -46,6 +47,8 @@ import { GigsModule } from './gigs/gigs.module';
     AuthModule,
 
     GigsModule,
+
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [

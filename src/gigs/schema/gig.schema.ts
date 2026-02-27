@@ -58,7 +58,7 @@ export class Gig {
   images: ImageType[];
 }
 
-// ✅ Use HydratedDocument instead of extending Document in the class
+//  Use HydratedDocument instead of extending Document in the class
 export type GigDocument = HydratedDocument<Gig>;
 
 export const GigSchema: any = SchemaFactory.createForClass(Gig);
