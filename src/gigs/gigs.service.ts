@@ -40,7 +40,7 @@ export class GigsService {
     const savedGig = await gig.save();
 
     return {
-      gig: this.toGigObject(savedGig), 
+      gig: this.toGigObject(savedGig),
       message: 'Gig created successfully',
     };
   }
@@ -53,7 +53,7 @@ export class GigsService {
       .limit(limit)
       .exec();
 
-    return gigs.map((gig) => this.toGigObject(gig)); 
+    return gigs.map((gig) => this.toGigObject(gig));
   }
 
   async editGig(gigId: string, updateData: UpdateGigInput, userId: string) {
@@ -103,6 +103,11 @@ export class GigsService {
   async findOne(gigId: string, userId: string) {
     const gig = await this.gigModel.findOne({ _id: gigId, userId });
     if (!gig) throw new Error('Gig not found');
-    return this.toGigObject(gig); 
+    return this.toGigObject(gig);
+  }
+
+  async findById(gigId: string): Promise<Gig | null> {
+    const gig = await this.gigModel.findById(gigId).exec();
+    return gig ? this.toGigObject(gig) : null;
   }
 }

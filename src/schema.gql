@@ -16,6 +16,16 @@ type CreateGigResponse {
   message: String!
 }
 
+input CreateOrderInput {
+  additionalInstructions: String
+  gigId: String!
+  quantity: Int!
+  requirements: RequirementsInput
+  selectedPackage: PackageSelectionInput!
+  sellerId: String!
+  totalAmount: Float!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -59,16 +69,74 @@ type LoginResponse {
 
 type Mutation {
   createGig(input: CreateGigInput!): CreateGigResponse!
+  createOrder(input: CreateOrderInput!): Order!
   deleteGig(gigId: String!): String!
   editGig(gigId: String!, updateData: UpdateGigInput!): CreateGigResponse!
   login(input: LoginInput!): LoginResponse!
   register(input: RegisterInput!): RegisterResponse!
+  updateOrderStatus(orderId: String!, status: OrderStatus!, userType: String!): Order!
   verifyOTP(otp: String!, userId: String!): RegisterResponse!
 }
 
+type Order {
+  _id: ID!
+  buyer: ID!
+  cancelledAt: DateTime
+  completedAt: DateTime
+  createdAt: DateTime!
+  deliveryTime: Float!
+  description: String!
+  gig: ID!
+  id: ID!
+  orderStatus: OrderStatus!
+  packageName: String!
+  packageType: String!
+  paymentStatus: PaymentStatus!
+  price: Float!
+  quantity: Float!
+  requirements: RequirementsType
+  review: ID
+  seller: ID!
+  startedAt: DateTime
+  stripePaymentIntentId: String
+  stripePaymentMethodId: String
+  totalAmount: Float!
+  updatedAt: DateTime!
+}
+
+"""Order status enum"""
+enum OrderStatus {
+  CANCELLED
+  COMPLETED
+  DELIVERED
+  IN_PROGRESS
+  PENDING
+  REVISION
+}
+
+input PackageSelectionInput {
+  deliveryDays: Int!
+  description: String!
+  name: String!
+  packageId: String!
+  packageType: String!
+  price: Float!
+}
+
+"""Payment status enum"""
+enum PaymentStatus {
+  FAILED
+  PAID
+  PENDING
+  REFUNDED
+}
+
 type Query {
+  buyerOrders(status: String): [Order!]!
   hello: String!
   listAllGigs(input: ListGigsInput): [Gig!]!
+  order(id: String!): Order!
+  sellerOrders(status: String): [Order!]!
 }
 
 input RegisterInput {
@@ -83,6 +151,16 @@ input RegisterInput {
 
 type RegisterResponse {
   message: String!
+}
+
+input RequirementsInput {
+  additionalInstructions: String
+  requirements: String
+}
+
+type RequirementsType {
+  additionalInstructions: String
+  requirements: String
 }
 
 input UpdateGigInput {

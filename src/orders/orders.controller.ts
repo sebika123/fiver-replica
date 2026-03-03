@@ -18,6 +18,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { StripeService } from '../stripe/stripe.service';
 import { CreateOrderInput } from './dto/order.type.dto';
 import { OrderStatus } from './schema/order.schema';
+import { CurrentUserRest } from 'src/auth/current-user-rest.decorator';
 
 @Controller('orders')
 @UseGuards(JwtAuthGuard)
@@ -29,11 +30,11 @@ export class OrdersController {
 
   @Post()
   async createOrder(
-    @Req() req: RequestWithUser,
+    @CurrentUserRest() user: any,
     @Body() createOrderDto: CreateOrderInput,
   ) {
     const order = await this.ordersService.createOrder(
-      req.user.userId,
+      user.userId,
       createOrderDto,
     );
     return order;
@@ -41,15 +42,15 @@ export class OrdersController {
 
   @Post(':orderId/create-payment-intent')
   async createPaymentIntent(
-    @Req() req: RequestWithUser,
+    @CurrentUserRest() user: any,
     @Param('orderId') orderId: string,
   ) {
-    return this.ordersService.createPaymentIntent(orderId, req.user.userId);
+    return this.ordersService.createPaymentIntent(orderId, user.userId);
   }
 
   @Post(':orderId/confirm-payment')
   async confirmPayment(
-    @Req() req: RequestWithUser,
+    @CurrentUserRest() user: any,
     @Param('orderId') orderId: string,
     @Body('paymentIntentId') paymentIntentId: string,
     @Body('paymentMethodId') paymentMethodId: string,
@@ -63,14 +64,14 @@ export class OrdersController {
 
   @Patch(':orderId/status')
   async updateOrderStatus(
-    @Req() req: RequestWithUser,
+    @CurrentUserRest() user: any,
     @Param('orderId') orderId: string,
     @Body('status') status: OrderStatus,
     @Body('userType') userType: 'buyer' | 'seller',
   ) {
     return this.ordersService.updateOrderStatus(
       orderId,
-      req.user.userId,
+      user.userId,
       status,
       userType,
     );
@@ -78,13 +79,13 @@ export class OrdersController {
 
   @Get('buyer')
   async getBuyerOrders(
-    @Req() req: RequestWithUser,
+    @CurrentUserRest() user: any,
     @Query('status') status?: OrderStatus,
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ) {
     return this.ordersService.getBuyerOrders(
-      req.user.userId,
+      user.user.userId,
       status,
       +page,
       +limit,
@@ -93,13 +94,13 @@ export class OrdersController {
 
   @Get('seller')
   async getSellerOrders(
-    @Req() req: RequestWithUser,
+    @CurrentUserRest() user: any,
     @Query('status') status?: OrderStatus,
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ) {
     return this.ordersService.getSellerOrders(
-      req.user.userId,
+      user.user.userId,
       status,
       +page,
       +limit,
@@ -108,16 +109,19 @@ export class OrdersController {
 
   @Get(':orderId')
   async getOrderById(
-    @Req() req: RequestWithUser,
+    @CurrentUserRest() user: any,
     @Param('orderId') orderId: string,
   ) {
-    return this.ordersService.getOrderById(orderId, req.user.userId);
+    return this.ordersService.getOrderById(orderId, user.user.userId);
   }
 }
 
 @Controller('webhooks')
 export class WebhooksController {
-  constructor(private ordersService: OrdersService) {}
+  constructor(
+    private ordersService: OrdersService,
+    private stripeService: StripeService, // Add StripeService here
+  ) {}
 
   @Post('stripe')
   @HttpCode(HttpStatus.OK)

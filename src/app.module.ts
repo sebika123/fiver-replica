@@ -14,6 +14,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { GigsModule } from './gigs/gigs.module';
 import { OrdersModule } from './orders/orders.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -49,6 +50,8 @@ import { OrdersModule } from './orders/orders.module';
     GigsModule,
 
     OrdersModule,
+
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [

@@ -4,6 +4,7 @@ import { OrdersService } from './orders.service';
 import { Order, OrderStatus } from './schema/order.schema';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateOrderInput } from './dto/order.type.dto';
+import { CurrentUser } from 'src/auth/currentr-user.decorator';
 
 @Resolver(() => Order)
 export class OrdersResolver {

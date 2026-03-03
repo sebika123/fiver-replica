@@ -43,6 +43,17 @@ export class OrdersService {
     const platformFee = this.calculatePlatformFee(createOrderInput.totalAmount);
     const totalWithFee = createOrderInput.totalAmount + platformFee;
 
+    // Prepare requirements object
+    const requirements = createOrderInput.requirements
+      ? {
+          additionalInstructions:
+            createOrderInput.requirements.additionalInstructions,
+          requirements: createOrderInput.requirements.requirements,
+        }
+      : {
+          additionalInstructions: createOrderInput.additionalInstructions,
+        };
+
     // Create order
     const order = new this.orderModel({
       buyer: new Types.ObjectId(buyerId),
@@ -55,10 +66,7 @@ export class OrdersService {
       quantity: createOrderInput.quantity,
       totalAmount: totalWithFee,
       deliveryTime: createOrderInput.selectedPackage.deliveryDays,
-      requirements: {
-        additionalInstructions: createOrderInput.additionalInstructions,
-        requirements: createOrderInput.requirements,
-      },
+      requirements: requirements,
       orderStatus: OrderStatus.PENDING,
       paymentStatus: PaymentStatus.PENDING,
     });
